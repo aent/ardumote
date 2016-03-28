@@ -14,7 +14,8 @@ find_package(catkin REQUIRED COMPONENTS
 
 add_service_files(
   FILES
-  ppm.srv
+  initPPM.srv
+  setPPM.srv
 )
 
 generate_messages(
@@ -53,8 +54,8 @@ rosserial_configure_client(
   TOOLCHAIN_FILE ${ROSSERIAL_ARDUINO_TOOLCHAIN}
 )
 
-rosserial_add_client_target(firmware arduinofw ALL)
-rosserial_add_client_target(firmware arduinofw-upload)
+rosserial_add_client_target(firmware ardumote ALL)
+rosserial_add_client_target(firmware ardumote-upload)
 
 #############
 ## Install ##
