@@ -39,6 +39,7 @@ ros::ServiceServer<ardumote::setPPM::Request, ardumote::setPPM::Response> servic
 
 void setup() 
 {
+  node_handle.getHardware()->setBaud(115200);
   node_handle.initNode();
 
   node_handle.advertiseService(service_server_init_ppm);
