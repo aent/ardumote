@@ -6,6 +6,7 @@ find_package(catkin REQUIRED COMPONENTS
   rosserial_arduino
   rosserial_client
   std_msgs
+  roscpp
 )
 
 ################################################
@@ -56,6 +57,14 @@ rosserial_configure_client(
 
 rosserial_add_client_target(firmware ardumote ALL)
 rosserial_add_client_target(firmware ardumote-upload)
+
+add_executable(ardumotetest 
+  src/ardumotetest.cpp
+)
+
+target_link_libraries(ardumotetest
+  ${catkin_LIBRARIES}
+)
 
 #############
 ## Install ##

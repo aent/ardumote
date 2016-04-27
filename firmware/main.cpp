@@ -67,10 +67,10 @@ void initPPMCallbackFunction(ardumote::initPPM::Request const &req, ardumote::in
     }
   }
 
-  res.result = success;
+  res.success = success;
 }
 
 void setPPMCallbackFunction(ardumote::setPPM::Request const &req, ardumote::setPPM::Response &res)
 {
-  res.result = PPMGenerator::setPulseWidthUs(req.channel, req.pulse_duration_us);
+  res.success = PPMGenerator::setPulseWidthUs(req.channel, req.pulse_duration_us);
 }

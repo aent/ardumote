@@ -1,0 +1,3 @@
+<launch>  
+    <node pkg="ardumote" type="ardumotetest" name="ardumotetest" output="screen"/>
+</launch>   
