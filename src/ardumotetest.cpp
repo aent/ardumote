@@ -107,8 +107,8 @@ void handlesetPPMServiceRequest(ros::ServiceClient &setPPM_service_client)
     else                     std::cout << "setPPM ERROR"   << std::endl;
   }
   else
-    std::cout << "setPPM service call failed" << std::endl;
   {
+    std::cout << "setPPM service call failed" << std::endl;
   }
 }
 
