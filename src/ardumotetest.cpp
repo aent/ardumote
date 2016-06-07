@@ -8,17 +8,15 @@
 
 #include <ros/ros.h>
 
-#include <ardumote/initPPM.h>
-#include <ardumote/setPPM.h>
+#include <ardumote/PPM.h>
 
 /**************************************************************************************
  * PROTOTYPES
  **************************************************************************************/
 
-void handleInitPPMServiceRequest(ros::ServiceClient &initPPM_service_client);
-void handlesetPPMServiceRequest (ros::ServiceClient &setPPM_service_client);
-void handleExit                 ();
-void handleInvalidValue         ();
+void handleSetPPM      (ros::Publisher &ppm_publisher);
+void handleExit        ();
+void handleInvalidValue();
 
 /**************************************************************************************
  * MAIN
@@ -30,10 +28,9 @@ int main(int argc, char **argv)
   
   ros::NodeHandle node_handle;
 
-  /* Create the two service clients for the two services */
+  /* Create the publisher for sending ppm messages to the arduino */
   
-  ros::ServiceClient initPPM_service_client = node_handle.serviceClient<ardumote::initPPM>("initPPM");
-  ros::ServiceClient setPPM_service_client  = node_handle.serviceClient<ardumote::setPPM> ("setPPM");
+  ros::Publisher ppm_publisher = node_handle.advertise<ardumote::PPM>("/ppm", 10);
 
   /* Provide a crude menu for selecting which service one wants to invoke */
 
@@ -42,16 +39,14 @@ int main(int argc, char **argv)
   do
   {
     std::cout << std::endl;
-    std::cout << "[i]nitPPM service request" << std::endl;
-    std::cout << "[s]etPPM service request" << std::endl;
+    std::cout << "set the [p]pm value of a channel" << std::endl;
     std::cout << "[q]uit" << std::endl;
 
     std::cout << ">>"; std::cin >> cmd;
 
     switch(cmd)
     {
-    case 'i': handleInitPPMServiceRequest(initPPM_service_client); break;
-    case 's': handlesetPPMServiceRequest (setPPM_service_client);  break;
+    case 'p': handleSetPPM (ppm_publisher);  break;
     case 'q': handleExit                 ();                       break;
     default:  handleInvalidValue         ();                       break;
     }
@@ -64,29 +59,7 @@ int main(int argc, char **argv)
  * OUR FUNCTIONS
  **************************************************************************************/
 
-void handleInitPPMServiceRequest(ros::ServiceClient &initPPM_service_client)
-{
-  std::cout << "Enter the desired number of PPM channels: ";
-  size_t num_ppm_channels = 0;
-  std::cin >> num_ppm_channels;
-
-  ardumote::initPPM srv;
-  srv.request.num_channels = static_cast<uint8_t>(num_ppm_channels);
-  
-  bool const success = initPPM_service_client.call(srv);
-
-  if(success)
-  {
-    if(srv.response.success) std::cout << "initPPM SUCCESS" << std::endl;
-    else                     std::cout << "initPPM ERROR"   << std::endl;
-  }
-  else
-  {
-    std::cout << "initPPM service call failed" << std::endl;
-  }
-}
-
-void handlesetPPMServiceRequest(ros::ServiceClient &setPPM_service_client)
+void handleSetPPM(ros::Publisher &ppm_publisher)
 {
   std::cout << "Enter the desired channel number for which you want to set the pulse duration: ";
   size_t ppm_channel = 0;
@@ -95,21 +68,11 @@ void handlesetPPMServiceRequest(ros::ServiceClient &setPPM_service_client)
   size_t pulse_duration_us = 0;
   std::cin >> pulse_duration_us;
 
-  ardumote::setPPM srv;
-  srv.request.channel           = static_cast<uint8_t>(ppm_channel);
-  srv.request.pulse_duration_us = static_cast<uint8_t>(pulse_duration_us);
-  
-  bool const success = setPPM_service_client.call(srv);
-
-  if(success)
-  {
-    if(srv.response.success) std::cout << "setPPM SUCCESS" << std::endl;
-    else                     std::cout << "setPPM ERROR"   << std::endl;
-  }
-  else
-  {
-    std::cout << "setPPM service call failed" << std::endl;
-  }
+  ardumote::PPM msg;
+  msg.channel           = static_cast<uint8_t>(ppm_channel);
+  msg.pulse_duration_us = static_cast<uint8_t>(pulse_duration_us);
+ 
+  ppm_publisher.publish(msg);
 }
 
 void handleExit()

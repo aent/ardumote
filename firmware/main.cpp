@@ -6,8 +6,7 @@
 
 #include <ros.h>
 
-#include <ardumote/initPPM.h>
-#include <ardumote/setPPM.h>
+#include <ardumote/PPM.h>
 
 #include "PPMGenerator.h"
 
@@ -16,13 +15,13 @@
  **************************************************************************************/
 
 static uint16_t const INITIAL_CHANNEL_VALUE_US = 1500;
+static uint8_t  const DEFAULT_NUM_OF_CHANNELS  = 5;
 
 /**************************************************************************************
  * PROTOTYPES
  **************************************************************************************/
 
-void initPPMCallbackFunction(ardumote::initPPM::Request const &req, ardumote::initPPM::Response &res);
-void setPPMCallbackFunction(ardumote::setPPM::Request const &req, ardumote::setPPM::Response &res);
+void PPMCallbackFunction(const ardumote::PPM &ppm_msg);
 
 /**************************************************************************************
  * GLOBAL VARIABLES
@@ -30,8 +29,7 @@ void setPPMCallbackFunction(ardumote::setPPM::Request const &req, ardumote::setP
 
 ros::NodeHandle node_handle;
 
-ros::ServiceServer<ardumote::initPPM::Request, ardumote::initPPM::Response> service_server_init_ppm("initPPM", &initPPMCallbackFunction);
-ros::ServiceServer<ardumote::setPPM::Request, ardumote::setPPM::Response> service_server_set_ppm("setPPM", &setPPMCallbackFunction);
+ros::Subscriber<ardumote::PPM> ppm_subscriber("/ppm", &PPMCallbackFunction);
 
 /**************************************************************************************
  * ARDUINO FRAMEWORK FUNCTIONS
@@ -42,8 +40,25 @@ void setup()
   node_handle.getHardware()->setBaud(115200);
   node_handle.initNode();
 
-  node_handle.advertiseService(service_server_init_ppm);
-  node_handle.advertiseService(service_server_set_ppm);
+  while(!node_handle.connected())
+  {
+    node_handle.spinOnce();
+  }
+
+  int num_channels = 0;
+  bool const success = node_handle.getParam("num_channels", &num_channels);
+  if(!success)
+  {
+    num_channels = DEFAULT_NUM_OF_CHANNELS;
+  }
+
+  PPMGenerator::begin((uint8_t)(num_channels));
+  for(uint8_t c = 0; c < num_channels; c++)
+  {
+    PPMGenerator::setPulseWidthUs(c, INITIAL_CHANNEL_VALUE_US);
+  }
+
+  node_handle.subscribe(ppm_subscriber);
 }
 
 void loop() 
@@ -55,22 +70,7 @@ void loop()
  * OUR FUNCTIONS
  **************************************************************************************/
 
-void initPPMCallbackFunction(ardumote::initPPM::Request const &req, ardumote::initPPM::Response &res)
+void PPMCallbackFunction(const ardumote::PPM &ppm_msg)
 {
-  bool success = PPMGenerator::begin(req.num_channels);
-
-  for(uint8_t i = 0; i < req.num_channels; i++)
-  {
-    if(!PPMGenerator::setPulseWidthUs(i, INITIAL_CHANNEL_VALUE_US))
-    {
-      success = false;
-    }
-  }
-
-  res.success = success;
-}
-
-void setPPMCallbackFunction(ardumote::setPPM::Request const &req, ardumote::setPPM::Response &res)
-{
-  res.success = PPMGenerator::setPulseWidthUs(req.channel, req.pulse_duration_us);
+  PPMGenerator::setPulseWidthUs(ppm_msg.channel, ppm_msg.pulse_duration_us);
 }

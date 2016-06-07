@@ -19,7 +19,7 @@
 /* PPM = D6 = PD6 */
 /* This output is used to provide a trigger signal for an oscilloscope */
 #define TRIGGER_DDR		(DDRD)
-#define TRIGGER_PORT	(PORTD)
+#define TRIGGER_PORT	        (PORTD)
 #define TRIGGER_bm		(1<<6)
 
 /************************************************************************

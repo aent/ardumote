@@ -1,4 +1,2 @@
 uint8 channel
 uint16 pulse_duration_us
----
-bool success

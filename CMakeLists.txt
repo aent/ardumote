@@ -13,10 +13,9 @@ find_package(catkin REQUIRED COMPONENTS
 ## Declare ROS messages, services and actions ##
 ################################################
 
-add_service_files(
+add_message_files(
   FILES
-  initPPM.srv
-  setPPM.srv
+  PPM.msg
 )
 
 generate_messages(
