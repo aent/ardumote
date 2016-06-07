@@ -42,7 +42,7 @@ cd ..
 catkin_make
 ```
 
-## Download
+### Download
 * Set the port under which the Arduino is connected to the PC by modifying [firmware/CMakeLists]
 ```
 PORT /dev/ttyUSB0
