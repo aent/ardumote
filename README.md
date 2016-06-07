@@ -52,6 +52,15 @@ PORT /dev/ttyUSB0
 catkin_make ardumote_firmware_ardumote-upload
 ```
 
+### Start
+* Set the port under which the Arduino is connected to the PC by modifying [launch/ardumote.launch]
+```
+<param name="port" value="/dev/ttyUSB0"/> 
+```
+* Start via roslaunch
+```
+roslaunch ardumote ardumote.launch
+```
 ## FAQ
 
 * **Error**: `fatal error: string: No such file or directory` when compiling custom messages/services
@@ -66,3 +75,4 @@ catkin_make ardumote_ros_lib
 
 [ardumote/PPM]: https://github.com/lxrobotics/ardumote/blob/master/msg/PPM.msg
 [firmware/CMakeLists]: https://github.com/lxrobotics/ardumote/blob/master/firmware/CMakeLists.txt
+[launch/ardumote.launch]: https://github.com/lxrobotics/ardumote/blob/master/launch/ardumote.launch
