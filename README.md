@@ -27,4 +27,42 @@ Emulate a full remote control by using an arduino and a PPM to 2.4 GHz module.
 
   The number of channels for the PPM generator library - maximum is 8.
 
+## Installation
+
+### Dependencies
+```
+sudo apt-get install arduino ros-indigo-rosserial ros-indigo-rosserial-arduino
+```
+
+### Building
+```
+cd ~/catkin_ws/src
+https://github.com/lxrobotics/ardumote
+cd ..
+catkin_make
+```
+
+## Download
+* Set the port under which the Arduino is connected to the PC by modifying [firmware/CMakeLists]
+```
+PORT /dev/ttyUSB0
+```
+* Download to the Arduino
+```
+catkin_make ardumote_firmware_ardumote-upload
+```
+
+## FAQ
+
+* **Error**: `fatal error: string: No such file or directory` when compiling custom messages/services
+
+**Solution**:
+```
+cd ~/catkin_ws/build/ardumote/
+rm -rf ros_lib
+cd ..
+catkin_make catkin_make ardumote_ros_lib
+```
+
 [ardumote/PPM]: https://github.com/lxrobotics/ardumote/blob/master/msg/PPM.msg
+[firmware/CMakeLists]: https://github.com/lxrobotics/ardumote/blob/master/firmware/CMakeLists.txt
