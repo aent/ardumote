@@ -61,7 +61,7 @@ catkin_make ardumote_firmware_ardumote-upload
 cd ~/catkin_ws/build/ardumote/
 rm -rf ros_lib
 cd ..
-catkin_make catkin_make ardumote_ros_lib
+catkin_make ardumote_ros_lib
 ```
 
 [ardumote/PPM]: https://github.com/lxrobotics/ardumote/blob/master/msg/PPM.msg
