@@ -37,7 +37,7 @@ sudo apt-get install arduino ros-indigo-rosserial ros-indigo-rosserial-arduino
 ### Building
 ```
 cd ~/catkin_ws/src
-https://github.com/lxrobotics/ardumote
+git clone https://github.com/lxrobotics/ardumote.git
 cd ..
 catkin_make
 ```
