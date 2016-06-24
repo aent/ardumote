@@ -70,7 +70,7 @@ void handleSetPPM(ros::Publisher &ppm_publisher)
 
   ardumote::PPM msg;
   msg.channel           = static_cast<uint8_t>(ppm_channel);
-  msg.pulse_duration_us = static_cast<uint8_t>(pulse_duration_us);
+  msg.pulse_duration_us = static_cast<uint16_t>(pulse_duration_us);
  
   ppm_publisher.publish(msg);
 }
